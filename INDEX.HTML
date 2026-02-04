@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Mitali Sharma ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .font-hand { font-family: 'Great Vibes', cursive; }
+        .font-body { font-family: 'Nunito', sans-serif; }
+
+        body {
+            background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fad0c4, #ffdde1);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            position: relative;
+        }
+
+        /* Envelope */
+        .envelope-wrapper { perspective: 1000px; }
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: #ff4757;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.5s;
+        }
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid #ff6b81;
+            transform-origin: top;
+            transition: transform 0.5s 0.25s;
+            z-index: 3;
+        }
+        .envelope.open::before { transform: rotateX(180deg); z-index: 0; }
+        .paper {
+            position: absolute;
+            top: 10px; left: 15px;
+            width: 270px; height: 180px;
+            background: white;
+            transition: transform 0.5s;
+            z-index: 1;
+            display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 10px;
+        }
+        .envelope.open .paper { transform: translateY(-120px); z-index: 2; }
+
+        /* Floating Hearts */
+        .floating-heart { position: absolute; color: rgba(255, 255, 255, 0.6); animation: floatUp linear infinite; z-index: -1; }
+        @keyframes floatUp {
+            from { transform: translateY(110vh) scale(0.5); opacity: 1; }
+            to { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* Album Grid */
+        .album-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            perspective: 1000px;
+        }
+        .photo-frame {
+            background: white;
+            padding: 8px 8px 24px 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: rotate(var(--rotation));
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .photo-frame:hover {
+            transform: scale(1.1) rotate(0deg);
+            z-index: 50;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .typing::after { content: '|'; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body class="font-body selection:bg-pink-200 selection:text-pink-600">
+
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/10/05/audio_68629b37c0.mp3?filename=romantic-piano-123498.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="fixed top-4 right-4 z-50">
+        <button onclick="toggleMusic()" id="musicBtn" class="bg-white/80 p-3 rounded-full shadow-lg hover:bg-pink-100 transition-all">🎵</button>
+    </div>
+
+    <div id="hearts-bg" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+
+    <!-- STAGE 1: ENVELOPE -->
+    <div id="stage-envelope" class="envelope-wrapper">
+        <div class="envelope" onclick="openEnvelope()">
+            <div class="paper">
+                <h3 class="text-pink-600 font-bold text-lg mb-1">To: Mitali Sharma</h3>
+                <p class="text-gray-500 text-xs">The Prettiest Girl in the World...</p>
+                <div class="mt-4 text-2xl animate-bounce">💌</div>
+                <p class="text-pink-400 text-xs mt-2 font-bold">(Tap to open)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- STAGE 2: MAIN CARD -->
+    <div id="stage-card" class="hidden w-full max-w-md px-4 h-[90vh] flex flex-col items-center">
+        <div class="w-full bg-white/50 rounded-full h-2 mb-6 backdrop-blur-sm">
+            <div id="love-bar" class="bg-gradient-to-r from-pink-400 to-red-500 h-2 rounded-full transition-all duration-700" style="width: 0%"></div>
+        </div>
+
+        <div id="main-glass-card" class="glass-card rounded-3xl p-6 md:p-8 text-center overflow-y-auto border-2 border-white/60 w-full flex-grow flex flex-col">
+            <div id="content-area" class="flex-grow flex flex-col justify-center"></div>
+
+            <div id="nav-area" class="mt-4">
+                <button onclick="nextStep()" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:scale-105 transition-all w-full">Continue ❤️</button>
+            </div>
+
+            <div id="final-buttons" class="hidden mt-8 relative h-32 w-full">
+                <button onclick="acceptProposal()" class="absolute left-1/2 -translate-x-[110%] bottom-8 bg-green-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-green-600 transition-all z-10 text-xl">YES ! 💖</button>
+                <button id="no-btn" class="absolute left-1/2 -translate-x-[-10%] bottom-8 bg-gray-400 text-white px-8 py-3 rounded-full font-bold shadow-lg transition-all z-20 text-sm whitespace-nowrap">No 😢</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slides = [
+            { badge: "Start", img: "https://images.unsplash.com/photo-1518562180511-3010d817dd81?auto=format&fit=crop&w=800", title: "Hey Beautiful... ✨", text: "I've planned a little journey through our Valentine's week for the prettiest girl in the world." },
+            { badge: "Memory Lane", img: "https://images.unsplash.com/photo-1516589178581-28affaf92846?auto=format&fit=crop&w=800", title: "One Year Ago", text: "Remember where it all started? My heart has belonged to you since that very moment." },
+            { badge: "The Best Part", img: "https://images.unsplash.com/photo-1522673607200-1645062cd495?auto=format&fit=crop&w=800", title: "The Magic Moment", text: "Every second with you is a treasure. You make my life complete, Mitali Sharma." },
+            { badge: "Valentine's Day", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800", title: "The Big Question", text: "We've walked through the memories, but now for the most important moment of all..." }
+        ];
+
+        const albumPhotos = [
+            { url: "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=400", cap: "Our Smiles" },
+            { url: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=400", cap: "Warm Hugs" },
+            { url: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=400", cap: "Promises" },
+            { url: "https://images.unsplash.com/photo-1548505295-a2709e86a4c2?auto=format&fit=crop&w=400", cap: "Forever" }
+        ];
+
+        let currentStep = 0;
+        const contentArea = document.getElementById('content-area');
+        const navArea = document.getElementById('nav-area');
+        const loveBar = document.getElementById('love-bar');
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        const noBtn = document.getElementById('no-btn');
+
+        function openEnvelope() {
+            document.querySelector('.envelope').classList.add('open');
+            bgMusic.volume = 0.5;
+            setTimeout(() => {
+                playMusic();
+                document.getElementById('stage-envelope').classList.add('hidden');
+                document.getElementById('stage-card').classList.remove('hidden');
+                renderSlide(0);
+            }, 1000);
+        }
+
+        function playMusic() { bgMusic.play().then(() => musicBtn.innerHTML = "🎵").catch(() => musicBtn.innerHTML = "🔇"); }
+        function toggleMusic() { if (bgMusic.paused) playMusic(); else { bgMusic.pause(); musicBtn.innerHTML = "🔇"; } }
+
+        function renderSlide(index) {
+            const slide = slides[index];
+            loveBar.style.width = `${((index + 1) / (slides.length)) * 100}%`;
+            contentArea.innerHTML = `
+                <div class="fade-in">
+                    <span class="inline-block bg-pink-100 text-pink-600 text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-widest">${slide.badge}</span>
+                    <div class="bg-white p-2 shadow-lg mb-6 rotate-1">
+                        <img src="${slide.img}" class="w-full h-48 md:h-64 object-cover" alt="Memory">
+                    </div>
+                    <h2 class="font-hand text-4xl text-gray-800 mb-2">${slide.title}</h2>
+                    <p id="type-text-${index}" class="text-gray-600 font-body text-lg h-24 typing"></p>
+                </div>
+            `;
+            typeWriter(slide.text, `type-text-${index}`);
+        }
+
+        function typeWriter(text, elementId) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, 30);
+                } else element.classList.remove('typing');
+            }
+            type();
+        }
+
+        function nextStep() {
+            currentStep++;
+            if (currentStep < slides.length) renderSlide(currentStep);
+            else showProposal();
+        }
+
+        function showProposal() {
+            loveBar.style.width = "100%";
+            contentArea.innerHTML = `
+                <div class="fade-in">
+                    <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-pink-500 shadow-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400" class="w-full h-full object-cover">
+                    </div>
+                    <h1 class="font-hand text-5xl text-pink-600 mb-2">Mitali Sharma</h1>
+                    <p class="text-xl text-gray-700 font-bold mb-4">Will you be my Valentine?</p>
+                </div>
+            `;
+            navArea.classList.add('hidden');
+            document.getElementById('final-buttons').classList.remove('hidden');
+        }
+
+        function evade() {
+            const card = document.getElementById('main-glass-card');
+            const btnArea = document.getElementById('final-buttons');
+            const cardRect = card.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            const areaRect = btnArea.getBoundingClientRect();
+
+            const minX = -areaRect.left + cardRect.left + 20;
+            const maxX = cardRect.right - areaRect.left - btnRect.width - 20;
+            const minY = -areaRect.top + cardRect.top + 20;
+            const maxY = cardRect.bottom - areaRect.top - btnRect.height - 20;
+
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = `${Math.random() * (maxX - minX) + minX}px`;
+            noBtn.style.top = `${Math.random() * (maxY - minY) + minY}px`;
+            noBtn.style.bottom = 'auto';
+            noBtn.style.transform = 'none';
+        }
+
+        noBtn.addEventListener('mouseover', evade);
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); evade(); });
+
+        function acceptProposal() {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            
+            contentArea.innerHTML = `
+                <div class="fade-in py-4">
+                    <h1 class="font-hand text-5xl text-pink-600 mb-2">She Said Yes! 💍</h1>
+                    <p class="text-lg text-gray-700 mb-6">Mitali Sharma is the prettiest girl in the whole world! Here is our Memory Album:</p>
+                    
+                    <div class="album-container">
+                        ${albumPhotos.map((photo, i) => `
+                            <div class="photo-frame" style="--rotation: ${i % 2 === 0 ? '-5deg' : '5deg'}">
+                                <img src="${photo.url}" class="w-full h-24 object-cover mb-2">
+                                <p class="text-[10px] font-bold text-gray-500 font-hand">${photo.cap}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <button onclick="location.reload()" class="mt-8 text-pink-500 font-bold text-sm underline">Replay Our Story</button>
+                </div>
+            `;
+            document.getElementById('final-buttons').classList.add('hidden');
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = ['❤️', '💖', '💝', '🌸', '✨'][Math.floor(Math.random() * 5)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+            document.getElementById('hearts-bg').appendChild(heart);
+            setTimeout(() => heart.remove(), 6000);
+        }
+        setInterval(createHeart, 600);
+    </script>
+</body>
+
+</html>
